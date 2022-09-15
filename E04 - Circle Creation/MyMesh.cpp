@@ -1,4 +1,6 @@
 #include "MyMesh.h"
+
+using namespace std;
 void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Color)
 {
 	Release();
@@ -16,6 +18,34 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		Calculate a_nSubdivisions number of points around a center point in a radial manner
 		then call the AddTri function to generate a_nSubdivision number of faces
 	*/
+
+	//Vector containing vector3's
+	vector<vector2> vertex;
+	float theta = 0;
+
+	//offset to next tri, tri size is determined by amount of subdivisions
+	float offset = (2 * PI / a_nSubdivisions);
+
+	//Calculate the vectors for every tri
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		//Reversing cos and sin will make it so that it will only show on the other side. Normals?
+		float a = cos(theta) * a_fRadius;
+		float b = sin(theta) * a_fRadius;
+		vector2 temp = vector2(a, b);
+		theta += offset;
+		vertex.push_back(temp);
+	}
+
+	//Create the tri using addTri
+	for (int x = 0; x < a_nSubdivisions; x++)
+	{
+		//All z values are 0 for the circle to stay in 2 dimensions, BottomLeft is 0,0,0 since it is always in the middle
+		//TopLeft gets the next value in vertex as that value will be the next tri's BottomRight which should overlap.
+		AddTri(vector3(0, 0, 0),
+			vector3(vertex[x], 0),
+			vector3(vertex[(x + 1) % a_nSubdivisions], 0));
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
