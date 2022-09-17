@@ -115,6 +115,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E03 - Complimentary Color",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E03_ComplimentColors", "E03_ComplimentColors\E03_ComplimentColors.vcxproj", "{ED239E84-5FA4-420F-BB2B-02058960CE38}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E05- Transformations", "E05- Transformations\E05- Transformations.vcxproj", "{E69649F0-F0DE-4BE5-99C9-46EED6582F98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -327,6 +329,10 @@ Global
 		{ED239E84-5FA4-420F-BB2B-02058960CE38}.Debug|x86.Build.0 = Debug|Win32
 		{ED239E84-5FA4-420F-BB2B-02058960CE38}.Release|x86.ActiveCfg = Release|Win32
 		{ED239E84-5FA4-420F-BB2B-02058960CE38}.Release|x86.Build.0 = Release|Win32
+		{E69649F0-F0DE-4BE5-99C9-46EED6582F98}.Debug|x86.ActiveCfg = Debug|Win32
+		{E69649F0-F0DE-4BE5-99C9-46EED6582F98}.Debug|x86.Build.0 = Debug|Win32
+		{E69649F0-F0DE-4BE5-99C9-46EED6582F98}.Release|x86.ActiveCfg = Release|Win32
+		{E69649F0-F0DE-4BE5-99C9-46EED6582F98}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -383,6 +389,7 @@ Global
 		{822E40D2-80A1-46EB-AD93-EC28C4F145ED} = {78C06654-E155-40A8-97F7-7BA1E50977C5}
 		{6EF3FA59-19EA-4E6B-9AFF-A30D2C62C3AC} = {78C06654-E155-40A8-97F7-7BA1E50977C5}
 		{ED239E84-5FA4-420F-BB2B-02058960CE38} = {78C06654-E155-40A8-97F7-7BA1E50977C5}
+		{E69649F0-F0DE-4BE5-99C9-46EED6582F98} = {78C06654-E155-40A8-97F7-7BA1E50977C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A36545A6-DAAA-4856-BDB7-57C29F88BC6B}
