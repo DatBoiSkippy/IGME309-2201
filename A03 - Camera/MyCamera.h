@@ -13,10 +13,16 @@ namespace Simplex
 class MyCamera
 {
 	vector3 m_v3Position = vector3(0.0f, 0.0f, 10.0f); //Where my camera is located
-	vector3 m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
+	vector3 m_v3Target = m_v3Position + m_v3Forward; //What I'm looking at
 	vector3 m_v3Above = vector3(0.0f, 1.0f, 0.0f); //What is above the camera
 
+	vector3 m_v3Top = vector3(0.0f, 1.0f, 0.0f); // UP
+	vector3 m_v3Forward = vector3(0.0f, 0.0f, -1.0f); //FORWARD
+	vector3 m_v3Rightward = vector3(1.0f, 0.0f, 0.0f); //RIGHT
+
 	bool m_bPerspective = true; //perspective view? False is Orthographic
+
+	vector3 m_v3PitchYawRoll = vector3(0.0f); // Pitch and Yaw, no roll for this
 
 	float m_fFOV = 45.0f; //Field of View
 
@@ -130,6 +136,17 @@ public:
 	*/
 	vector3 GetAbove(void);
 
+	void SetForward(vector3 a_v3Forward);
+
+	vector3 GetForward(void);
+
+	void SetRightward(vector3 a_v3Rightward);
+
+	vector3 GetRightward(void);
+
+	void ChangeYaw(float a_fDegree);
+
+	void ChangePitch(float a_fDegree);
 	/*
 	USAGE: Sets Perspective Camera
 	ARGUMENTS: bool a_bPerspective = true -> is camera perspective or orthographic

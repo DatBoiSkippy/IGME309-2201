@@ -276,7 +276,31 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	std::vector<vector3> circleVertex;
+	std::vector<vector3> coneVertex;
+	GLfloat theta = 0;
+	GLfloat delta = static_cast<GLfloat>(2 * PI / a_nSubdivisions);
+	//Used to make the base triangles
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+
+		vector3 temp = vector3(cos(theta) * a_fRadius, sin(theta) * a_fRadius, 0.0f);
+		theta += delta;
+		circleVertex.push_back(temp);
+	}
+	//Used to make the cone triangles, -sin is to flip the normals. Could be done by switching vertices in AddTri.
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 temp = vector3(cos(theta) * a_fRadius, -sin(theta) * a_fRadius, a_fHeight);
+		theta += delta;
+		coneVertex.push_back(temp);
+	}
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 translate = vector3(0, 0, a_fHeight);
+		AddTri(ZERO_V3 + translate, circleVertex[i] + translate, circleVertex[(i + 1) % a_nSubdivisions] + translate);
+		AddTri(ZERO_V3, coneVertex[i], coneVertex[(i + 1) % a_nSubdivisions]);
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -300,7 +324,28 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	std::vector<vector3> circle1;
+	std::vector<vector3> circle2;
+	std::vector<vector3> cylinder;
+	GLfloat theta = 0;
+	GLfloat delta = static_cast<GLfloat>(2 * PI / a_nSubdivisions);
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 temp = vector3(cos(theta) * a_fRadius, sin(theta) * a_fRadius, 0.0f);
+		vector3 temp2 = vector3(cos(theta) * a_fRadius, -sin(theta) * a_fRadius, 0.0f);
+		vector3 cylTemp = vector3(cos(theta) * a_fRadius, -sin(theta) * a_fRadius, a_fHeight);
+		theta += delta;
+		circle1.push_back(temp);
+		circle2.push_back(temp2);
+		cylinder.push_back(cylTemp);
+	}
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 translate = vector3(0, 0, a_fHeight);
+		AddTri(ZERO_V3 + translate, circle1[i] + translate, circle1[(i + 1) % a_nSubdivisions] + translate);
+		AddTri(ZERO_V3, circle2[i], circle2[(i + 1) % a_nSubdivisions]);
+		AddQuad(cylinder[i], cylinder[(i + 1) % a_nSubdivisions], circle2[i], circle2[(i + 1) % a_nSubdivisions]);
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -330,7 +375,41 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	std::vector<vector3> circle1;
+	std::vector<vector3> innerCircle1;
+	std::vector<vector3> circle2;
+	std::vector<vector3> innerCircle2;
+	std::vector<vector3> cylinder;
+	std::vector<vector3> cylinderInner;
+
+	GLfloat theta = 0;
+	GLfloat delta = static_cast<GLfloat>(2 * PI / a_nSubdivisions);
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 temp = vector3(cos(theta) * a_fOuterRadius, sin(theta) * a_fOuterRadius, 0.0f);
+		vector3 innerTemp = vector3(cos(theta) * a_fInnerRadius, sin(theta) * a_fInnerRadius, 0.0f);
+		//More clutter and less efficient, but much easier in flipping normals
+		vector3 temp2 = vector3(cos(theta) * a_fOuterRadius, -sin(theta) * a_fOuterRadius, 0.0f);
+		vector3 innerTemp2 = vector3(cos(theta) * a_fInnerRadius, -sin(theta) * a_fInnerRadius, 0.0f);
+		vector3 cylTemp = vector3(cos(theta) * a_fOuterRadius, -sin(theta) * a_fOuterRadius, a_fHeight);
+		vector3 cylTempInner = vector3(cos(theta) * a_fInnerRadius, -sin(theta) * a_fInnerRadius, a_fHeight);
+		theta += delta;
+		circle1.push_back(temp);
+		innerCircle1.push_back(innerTemp);
+		circle2.push_back(temp2);
+		innerCircle2.push_back(innerTemp2);
+		cylinder.push_back(cylTemp);
+		cylinderInner.push_back(cylTempInner);
+	}
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 translate = vector3(0, 0, a_fHeight);
+		AddQuad(circle1[i] + translate, circle1[(i + 1) % a_nSubdivisions] + translate, innerCircle1[i] + translate, innerCircle1[(i + 1) % a_nSubdivisions] + translate);
+		AddQuad(circle2[i], circle2[(i + 1) % a_nSubdivisions], innerCircle2[i], innerCircle2[(i + 1) % a_nSubdivisions]);
+		AddQuad(cylinder[i], cylinder[(i + 1) % a_nSubdivisions], circle2[i], circle2[(i + 1) % a_nSubdivisions]);
+		AddQuad(innerCircle2[i], innerCircle2[(i + 1) % a_nSubdivisions],cylinderInner[i], cylinderInner[(i + 1) % a_nSubdivisions]);
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -361,8 +440,6 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
 
 	// Adding information about color
@@ -385,10 +462,6 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	Release();
 	Init();
-
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);

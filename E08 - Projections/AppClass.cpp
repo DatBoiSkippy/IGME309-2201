@@ -54,21 +54,38 @@ void Application::Display(void)
 		break;
 	case 2:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(false);
 		break;
 	case 3:
-		m_pCamera->ResetCamera();
+		m_pCamera->SetPositionTargetAndUpward(vector3(10.0f, 0.0f, 0.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, 0.0f, -1.0f));
+		m_pCamera->SetVerticalPlanes(vector2(-15.0f, 15.0f));
+		m_pCamera->SetHorizontalPlanes(vector2(-15.0f, 15.0f));
 		break;
 	case 4:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f));
 		break;
 	case 5:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f));
+		//Makes it so near clipping plane rids blue shape from view
+		m_pCamera->SetNearFar(vector2(7.0f, 1000.0f));
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f));
+		//Makes it so far clipping plane rids red shape from view
+		m_pCamera->SetNearFar(vector2(0.001f, 10.0f));
 		break;
 	case 7:
 		m_pCamera->ResetCamera();
+		//Flips the world up.
+		m_pCamera->SetUp(vector3(0.0f, -1.0f, 0.0f));
+		break;
+	case 8:
+		m_pCamera->ResetCamera();
+		//Test to see from afar
+		m_pCamera->SetPosition(vector3(7.0f, 8.0f, -20.0f));
 		break;
 	}
 

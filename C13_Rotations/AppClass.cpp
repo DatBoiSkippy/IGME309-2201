@@ -34,10 +34,15 @@ void Application::Display(void)
 
 	//calculate the current position
 	matrix4 m4Rotation = glm::rotate(IDENTITY_M4, glm::radians(fTimer * 60.0f), vector3(0.0f, 0.0f, 1.0f));
+	matrix4 m4Translation = glm::translate(IDENTITY_M4, vector3(2.5f, 0.0f, 0.0f));
+
 	matrix4 m4Model;
-	for (uint i = 0; i < 2500; ++i)
-		m4Model = m4Rotation * glm::translate(IDENTITY_M4, vector3(2.5f, 0.0f, 0.0f)) * glm::transpose(m4Rotation);
-	
+
+	m4Model = m4Rotation * m4Translation * glm::inverse(m4Rotation);
+
+	quaternion qTemp = glm::angleAxis(glm::radians(fTimer * 60.0f), vector3(1.0f, 1.0f, 1.0f));
+
+	m4Model = ToMatrix4(qTemp);
 	/*
 	//extra part, how to rotate around a point (in this case the base of the cone)
 	matrix4 m4Translation = glm::translate(IDENTITY_M4, vector3(0.0f, 0.5f, 0.0f));

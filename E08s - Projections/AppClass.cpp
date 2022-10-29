@@ -79,6 +79,10 @@ void Application::Display(void)
 		m_pCamera->ResetCamera();
 		m_pCamera->SetUp(AXIS_Y * -1.0f);
 		break;
+	case 8:
+		m_pCamera->ResetCamera();
+		m_pCamera->SetPosition(vector3(7.0f, 8.0f, -20.0f));
+		break;
 	}
 
 	m_pCamera->CalculateProjectionMatrix();

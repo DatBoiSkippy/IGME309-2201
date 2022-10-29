@@ -8,6 +8,10 @@ void Simplex::MyCamera::SetTarget(vector3 a_v3Target) { m_v3Target = a_v3Target;
 vector3 Simplex::MyCamera::GetTarget(void) { return m_v3Target; }
 void Simplex::MyCamera::SetAbove(vector3 a_v3Above) { m_v3Above = a_v3Above; }
 vector3 Simplex::MyCamera::GetAbove(void) { return m_v3Above; }
+void Simplex::MyCamera::SetForward(vector3 a_v3Forward) { m_v3Forward = a_v3Forward; }
+vector3 Simplex::MyCamera::GetForward(void) { return m_v3Forward; }
+void Simplex::MyCamera::SetRightward(vector3 a_v3Rightward) { m_v3Rightward = a_v3Rightward; }
+vector3 Simplex::MyCamera::GetRightward(void) { return m_v3Rightward; }
 void Simplex::MyCamera::SetPerspective(bool a_bPerspective) { m_bPerspective = a_bPerspective; }
 void Simplex::MyCamera::SetFOV(float a_fFOV) { m_fFOV = a_fFOV; }
 void Simplex::MyCamera::SetResolution(vector2 a_v2Resolution) { m_v2Resolution = a_v2Resolution; }
@@ -33,6 +37,7 @@ Simplex::MyCamera::MyCamera(MyCamera const& other)
 	m_v3Position = other.m_v3Position;
 	m_v3Target = other.m_v3Target;
 	m_v3Above = other.m_v3Above;
+	m_v3Top = other.m_v3Top;
 
 	m_bPerspective = other.m_bPerspective;
 
@@ -78,6 +83,7 @@ void Simplex::MyCamera::Swap(MyCamera & other)
 	std::swap(m_v3Position, other.m_v3Position);
 	std::swap(m_v3Target, other.m_v3Target);
 	std::swap(m_v3Above, other.m_v3Above);
+	std::swap(m_v3Top, other.m_v3Top);
 	
 	std::swap(m_bPerspective, other.m_bPerspective);
 
@@ -132,7 +138,8 @@ void Simplex::MyCamera::SetPositionTargetAndUpward(vector3 a_v3Position, vector3
 void Simplex::MyCamera::CalculateViewMatrix(void)
 {
 	//Calculate the look at most of your assignment will be reflected in this method
-	m_m4View = glm::lookAt(m_v3Position, m_v3Target, glm::normalize(m_v3Above - m_v3Position)); //position, target, upward
+	//Changed it so instead of target, it is separated into two vectors that can be individually influenced much simpler
+	m_m4View = glm::lookAt(m_v3Position, m_v3Position + m_v3Forward, m_v3Top); //position, target, upward
 }
 
 void Simplex::MyCamera::CalculateProjectionMatrix(void)
@@ -152,11 +159,39 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 
 void MyCamera::MoveForward(float a_fDistance)
 {
-	//The following is just an example and does not take in account the forward vector (AKA view vector)
-	m_v3Position += vector3(0.0f, 0.0f,-a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance);
-	m_v3Above += vector3(0.0f, 0.0f, -a_fDistance);
+	//Add the forward vector multiplied by the speed to the location of the camera, rotation calculations are done in m_v3Forward
+	m_v3Position += m_v3Forward * a_fDistance;
 }
 
-void MyCamera::MoveVertical(float a_fDistance){}//Needs to be defined
-void MyCamera::MoveSideways(float a_fDistance){}//Needs to be defined
+void MyCamera::MoveVertical(float a_fDistance)
+{
+	//Add the up vector multiplied by the speed to the location of the camera, target and up
+	m_v3Position += m_v3Top * a_fDistance;
+}
+void MyCamera::MoveSideways(float a_fDistance)
+{
+	//Find the cross product of forward and up vector to get right vector and add that to the position to strafe
+	m_v3Position += m_v3Rightward * a_fDistance;
+	m_v3Rightward = glm::normalize(glm::cross(m_v3Forward, m_v3Top));
+}
+
+
+//No Quaternions? Much easier using the first intellisense option on glm::rotate to calculate rotations on forward vector
+void MyCamera::ChangeYaw(float a_fDegree)
+{
+	//Convert yaw degrees to a vector2 
+	glm::vec2 mousePos = glm::vec2(a_fDegree, 0.0f);
+	//This version of glm::rotate will rotate the camera around the UP. Rotate gives us a mat4, so convert to mat3 and multiply by self
+	m_v3Forward = glm::mat3(glm::rotate(-mousePos.x, m_v3Top)) * m_v3Forward;
+
+	//m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
+}
+
+//Same as Yaw except using cross product again to rotate over RIGHT.
+void MyCamera::ChangePitch(float a_fDegree)
+{
+	m_v3Rightward = glm::normalize(glm::cross(m_v3Forward, m_v3Top));
+
+	glm::vec2 mousePos = glm::vec2(0.0f, a_fDegree);
+	m_v3Forward = glm::mat3(glm::rotate(mousePos.y, m_v3Rightward)) * m_v3Forward;
+}
